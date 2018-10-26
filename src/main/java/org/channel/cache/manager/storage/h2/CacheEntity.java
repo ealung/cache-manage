@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * @author zhangchanglu<hzzhangchanglu @ corp.netease.com>
+ * @author zhangchanglu
  * @since 2018/10/16 17:18.
  */
 @Entity

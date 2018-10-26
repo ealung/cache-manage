@@ -18,18 +18,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Resource
     private LoginUserConfig loginUserConfig;
 
-//    @Bean
-//    public ServletRegistrationBean cacheRegistration() {
-//        LoginServletParam loginServletParam = LoginServletParam.defaultBuilder()
-//                .resourcePath("cache.http.resources")
-//                .prefix("/cache")
-//                .username(loginUserConfig.loginUser().getUserName())
-//                .password(loginUserConfig.loginUser().getUserPwd())
-//                .sessionUserKey("CACHESESSION")
-//                .build();
-//        return new ServletRegistrationBean(new BaseLoginServlet(loginServletParam), loginServletParam.getPrefix() + "/*");
-//    }
-
     @Bean
     public FilterRegistrationBean filterRegistrationBean() {
         LoginServletParam loginServletParam = LoginServletParam.defaultBuilder()

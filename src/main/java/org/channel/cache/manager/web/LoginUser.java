@@ -1,7 +1,7 @@
 package org.channel.cache.manager.web;
 
 /**
- * @author zhangchanglu<hzzhangchanglu @ corp.netease.com>
+ * @author zhangchanglu
  * @since 2018/05/17 17:45.
  */
 public class LoginUser {

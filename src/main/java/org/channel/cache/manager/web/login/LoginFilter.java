@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
- * @author zhangchanglu<hzzhangchanglu @ corp.netease.com>
+ * @author zhangchanglu
  * @since 2018/10/26 10:15.
  */
 public class LoginFilter implements Filter {
