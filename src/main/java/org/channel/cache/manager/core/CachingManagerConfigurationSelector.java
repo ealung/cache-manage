@@ -1,5 +1,6 @@
 package org.channel.cache.manager.core;
 
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AdviceModeImportSelector;
 import org.springframework.context.annotation.AutoProxyRegistrar;
@@ -8,7 +9,7 @@ import org.springframework.util.ClassUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CachingManagerConfigurationSelector extends AdviceModeImportSelector<EnableCachingManager> {
+public class CachingManagerConfigurationSelector extends AdviceModeImportSelector<EnableCaching> {
 
 	private static final String PROXY_JCACHE_CONFIGURATION_CLASS =
 			"org.springframework.cache.jcache.config.ProxyJCacheConfiguration";

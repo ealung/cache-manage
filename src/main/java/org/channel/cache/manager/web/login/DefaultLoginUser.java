@@ -19,8 +19,8 @@ public class DefaultLoginUser {
             @Override
             public LoginUser loginUser() {
                 LoginUser loginUser = new LoginUser();
-                loginUser.setUserName("cacheManger");
-                loginUser.setUserPwd("cacheManger");
+                loginUser.setUserName("cache");
+                loginUser.setUserPwd("cache");
                 return loginUser;
             }
         };

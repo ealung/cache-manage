@@ -1,11 +1,11 @@
 package org.channel.cache.manager;
 
-import org.channel.cache.manager.core.EnableCachingManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableCachingManager
+@EnableCaching
 public class CacheApplication {
 
 	public static void main(String[] args) {

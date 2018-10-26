@@ -19,6 +19,7 @@ package org.channel.cache.manager.core;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.annotation.AbstractCachingConfiguration;
 import org.springframework.cache.annotation.AnnotationCacheOperationSource;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.config.CacheManagementConfigUtils;
 import org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor;
 import org.springframework.cache.interceptor.CacheInterceptor;
@@ -78,7 +79,7 @@ public class ProxyCachingManagerConfiguration extends AbstractCachingConfigurati
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableCaching = AnnotationAttributes.fromMap(
-                importMetadata.getAnnotationAttributes(EnableCachingManager.class.getName(), false));
+                importMetadata.getAnnotationAttributes(EnableCaching.class.getName(), false));
         if (this.enableCaching == null) {
             throw new IllegalArgumentException(
                     "@EnableCachingManager is not present on importing class " + importMetadata.getClassName());
