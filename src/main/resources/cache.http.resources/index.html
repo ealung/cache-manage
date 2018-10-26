@@ -1,0 +1,191 @@
+<html>
+<header>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"/>
+    <link href="https://cdn.bootcss.com/jquery-jsonview/1.2.3/jquery.jsonview.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</header>
+<title>缓存管理</title>
+<body>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <ul class="nav nav-tabs" id="model">
+            <li role="presentation" class="active" value="1"><a href="#">Classes</a></li>
+            <li role="presentation" value="2"><a href="#">CacheName</a></li>
+        </ul>
+    </div>
+    <div class="panel-footer">
+        <div class="input-group">
+            <input id="searchText" name="cacheKey" type="text" class="form-control" placeholder="请输入查询的关键字">
+            <span class="input-group-btn">
+                    <button class="btn btn-default" onclick="search()" id="search">search!</button>
+            </span>
+        </div>
+    </div>
+</div>
+<div id="cache">
+    <div class="panel panel-default" v-for="classCache in caches">
+        <div class="panel-body">
+            <kbd>{{classCache.className}}</kbd>
+            <span style="color: #ff175a;cursor:pointer;float: right;" class="glyphicon glyphicon-trash"
+                  aria-hidden="true" @click="removeClassConfigName(classCache.className)"></span>
+        </div>
+        <div class="panel-footer">
+            <div v-for="cacheMethodDto in classCache.cacheMethodDtos">
+                <div class="panel panel-primary">
+                    <div class="panel-body">
+                        <label style="color: #1b809e;"><#> </label> {{cacheMethodDto.methodName}}
+                    </div>
+                    <div v-for="cacheManagerDto in cacheMethodDto.cacheManagerDtos">
+                        <ul>
+                            <li>
+                                <label style="color:#009999;">{{cacheManagerDto.cacheOperation}}</label>
+                                <label style="color:#990033;">&nbsp;&nbsp;{{cacheManagerDto.cacheConfigKey}}</label>
+                                <ul style="padding-left: 0px;" class="list-group"
+                                    v-for="cacheKey in cacheManagerDto.cacheKeys">
+                                    <li class="list-group-item">
+                                        <label>{{cacheKey}} <span style="color: #ff175a;cursor:pointer"
+                                                                  class="glyphicon glyphicon-minus"
+                                                                  aria-hidden="true"
+                                                                  @click="removeKey(cacheKey)"></span></label>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function search() {
+        var val = $("#model").find("li[class=active]").val();
+        var data;
+        if (val === 1) {
+            data = {
+                className: $("#searchText").val(),
+                model: val
+            }
+        } else {
+            data = {
+                cacheName: $("#searchText").val(),
+                model: val
+            }
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/cache/manager/search",
+            data: data,
+            success: function (data) {
+                cache.$data.caches = data;
+            },
+            dataType: "json"
+        });
+    }
+
+    $("#model").find("li").click(function () {
+        $("#model").find("li").attr("class", "");
+        $(this).attr("class", "active");
+        $("#search").click();
+    });
+    var cache;
+    $(document).ready(function () {
+        $.ajax({
+            type: 'POST',
+            url: "/cache/manager/all",
+            data: $("#searchText").val(),
+            success: function (data) {
+                cache = new Vue({
+                    el: '#cache',
+                    data: {caches: data},
+                    methods: {
+                        removeKey(rkey) {
+                            $.ajax({
+                                type: 'POST',
+                                url: "/cache/manager/remove",
+                                data: {
+                                    key: rkey
+                                },
+                                success: function () {
+                                    alert("操作成功.");
+                                    var val = $("#model").find("li[class=active]").val();
+                                    var param;
+                                    if (val === 1) {
+                                        param = {
+                                            className: $("#searchText").val(),
+                                            model: val
+                                        }
+                                    } else {
+                                        param = {
+                                            cacheName: $("#searchText").val(),
+                                            model: val
+                                        }
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: "/cache/manager/search",
+                                        data: param,
+                                        success: function (data) {
+                                            cache.$data.caches = data;
+                                        },
+                                        dataType: "json"
+                                    });
+                                },
+                                dataType: "json"
+                            });
+                        },
+                        removeClassConfigName(rkey) {
+                            var val = $("#model").find("li[class=active]").val();
+                            $.ajax({
+                                type: 'POST',
+                                url: "/cache/manager/remove/cacheName",
+                                data: {
+                                    className: rkey,
+                                    model: val
+                                },
+                                success: function () {
+                                    alert("操作成功.");
+                                    var param;
+                                    if (val === 1) {
+                                        param = {
+                                            className: $("#searchText").val(),
+                                            model: val
+                                        }
+                                    } else {
+                                        param = {
+                                            cacheName: $("#searchText").val(),
+                                            model: val
+                                        }
+                                    }
+                                    $.ajax({
+                                        type: 'POST',
+                                        url: "/cache/manager/search",
+                                        data: param,
+                                        success: function (data) {
+                                            cache.$data.caches = data;
+                                        },
+                                        dataType: "json"
+                                    });
+                                },
+                                dataType: "json"
+                            });
+                        }
+                    }
+                })
+            },
+            dataType: "json"
+        });
+        $("#searchText").keydown(function (e) {
+            if (e.keyCode === 13) {
+                search();
+            }
+        });
+    });
+</script>
+</html>

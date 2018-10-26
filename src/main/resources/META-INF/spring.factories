@@ -1,0 +1,3 @@
+# stoage
+org.channel.cache.manager.storage.CacheStorage=\
+com.netease.edu.kada.cache.storage.h2.H2Storage
