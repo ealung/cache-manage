@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @CacheConfig(cacheNames = "cacheService")
 public class CacheService {
-    @Cacheable(key = "#id",cacheNames = {"aaa"})
+    @Cacheable(key = "#id",cacheNames = {"cacheNameTest"})
     @CacheEvict(key = "#name")
     public String get(String id, String name) {
         return id;
