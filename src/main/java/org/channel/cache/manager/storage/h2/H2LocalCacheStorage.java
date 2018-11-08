@@ -126,9 +126,14 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
         cacheMethodDto.setCacheManagerDtos(cacheManagerDtos(cacheEntity));
         return cacheMethodDto;
     }
-
+    private void clean() {
+        cacheRepository.deleteAll();
+        cacheNameRepository.deleteAll();
+        cacheKeyRepository.deleteAll();
+    }
     @Override
     public void allCacheConfig(Collection<ClassCacheDto> cacheConfig) {
+        clean();
         for (ClassCacheDto classCacheDto : cacheConfig) {
             for (CacheMethodDto cacheMethodDto : classCacheDto.getCacheMethodDtos()) {
                 CacheOperation cacheOperation = cacheMethodDto.getCacheOperation();
@@ -152,8 +157,8 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
                 for (CacheOperation cacheOperation : methodCollectionEntry.getValue()) {
                     CacheEntity cacheEntity = new CacheEntity();
                     cacheEntity.setClassName(classCacheDto.getClassName());
-                    cacheEntity.setMethodName(methodCollectionEntry.getKey().getName());
-                    cacheEntity.setCacheConfigKey(cacheOperation.getKey());
+                    cacheEntity.setMethodName(methodCollectionEntry.getCacheKey().getName());
+                    cacheEntity.setCacheConfigKey(cacheOperation.getCacheKey());
                     cacheEntity.setCacheOperation(cacheOperation.getClass().getSimpleName());
                     cacheRepository.save(cacheEntity);
                     for (String s : cacheOperation.getCacheNames()) {
@@ -188,7 +193,7 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
         cacheManagerDto.setMethodName(cacheEntity.getMethodName());
         Collection<CacheKeyEntity> byCacheEntity_id = cacheKeyRepository.findByCacheEntity_Id(cacheEntity.getId());
         if (!CollectionUtils.isEmpty(byCacheEntity_id)) {
-            List<String> collect = byCacheEntity_id.stream().map(CacheKeyEntity::getKey).collect(Collectors.toList());
+            List<String> collect = byCacheEntity_id.stream().map(CacheKeyEntity::getCacheKey).collect(Collectors.toList());
             cacheManagerDto.setCacheKeys(collect);
         }
         cacheManagerDtos.add(cacheManagerDto);
@@ -225,7 +230,7 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
                 for (CacheKeyEntity cacheKeyEntity : cacheKeyRepository.findByCacheEntity_Id(cacheEntity.getId())) {
                     cacheKeyRepository.delete(cacheKeyEntity);
                     if (!Objects.isNull(cache)) {
-                        cache.evict(cacheKeyEntity.getKey());
+                        cache.evict(cacheKeyEntity.getCacheKey());
                     }
                 }
             }else{
@@ -262,7 +267,7 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
         CacheEntity cacheEntity = cacheRepository.findAllByClassNameAndMethodNameAndCacheConfigKey(className, methodName, cacheOperation.getKey());
         if (null != cacheEntity) {
             if (null == cacheKeyRepository.findByKeyAndCacheEntity_Id(cacheOperationContext.getKey().toString(), cacheEntity.getId())) {
-                cacheKeyEntity.setKey(cacheOperationContext.getKey().toString());
+                cacheKeyEntity.setCacheKey(cacheOperationContext.getKey().toString());
                 cacheKeyEntity.setCacheEntity(cacheEntity);
                 cacheKeyRepository.save(cacheKeyEntity);
             }
@@ -278,7 +283,7 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
         CacheEntity cacheEntity = cacheRepository.findAllByClassNameAndMethodNameAndCacheConfigKey(className, methodName, cacheOperation.getKey());
         if (!Objects.isNull(cacheEntity)) {
             CacheKeyEntity cacheKeyEntity = new CacheKeyEntity();
-            cacheKeyEntity.setKey(cacheOperationContext.getKey().toString());
+            cacheKeyEntity.setCacheKey(cacheOperationContext.getKey().toString());
             cacheKeyEntity.setCacheEntity(cacheEntity);
             cacheKeyRepository.delete(cacheKeyEntity);
         }

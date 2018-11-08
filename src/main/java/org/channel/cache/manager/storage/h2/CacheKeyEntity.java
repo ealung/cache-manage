@@ -15,7 +15,7 @@ public class CacheKeyEntity {
     @ManyToOne
     private CacheEntity cacheEntity;
     //缓存key
-    private String key;
+    private String cacheKey;
 
     public Long getId() {
         return id;
@@ -32,11 +32,11 @@ public class CacheKeyEntity {
         this.cacheEntity = cacheEntity;
     }
 
-    public String getKey() {
-        return key;
+    public String getCacheKey() {
+        return cacheKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setCacheKey(String cacheKey) {
+        this.cacheKey = cacheKey;
     }
 }
