@@ -29,23 +29,25 @@ import java.util.*;
 public class CacheManagerInterceptor extends CacheInterceptor implements ApplicationListener<ContextRefreshedEvent> {
     private MultiValueMap<CacheOperation, NetEaseCacheOperationContext> contexts = null;
     private List<CacheManagerHandler> cacheManagerHandlers = new ArrayList<>();
-
+    private boolean initialized=false;
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         Object invoke = super.invoke(invocation);
-        Class<?> targetClass = AopProxyUtils.ultimateTargetClass(invocation.getThis());
-        CacheOperationSource cacheOperationSource = getCacheOperationSource();
-        if (null == cacheOperationSource) {
-            return invoke;
-        }
-        Collection<CacheOperation> operations = cacheOperationSource.getCacheOperations(invocation.getMethod(), targetClass);
-        if (!CollectionUtils.isEmpty(operations)) {
-            contexts = new LinkedMultiValueMap<>(operations.size());
-            for (CacheOperation op : operations) {
-                CacheOperationMetadata metadata = getCacheOperationMetadata(op, invocation.getMethod(), targetClass);
-                this.contexts.add(op, new NetEaseCacheOperationContext(metadata, invocation.getArguments(), invocation.getThis()));
+        if(initialized) {
+            Class<?> targetClass = AopProxyUtils.ultimateTargetClass(invocation.getThis());
+            CacheOperationSource cacheOperationSource = getCacheOperationSource();
+            if (null == cacheOperationSource) {
+                return invoke;
             }
-            executeHandlers();
+            Collection<CacheOperation> operations = cacheOperationSource.getCacheOperations(invocation.getMethod(), targetClass);
+            if (!CollectionUtils.isEmpty(operations)) {
+                contexts = new LinkedMultiValueMap<>(operations.size());
+                for (CacheOperation op : operations) {
+                    CacheOperationMetadata metadata = getCacheOperationMetadata(op, invocation.getMethod(), targetClass);
+                    this.contexts.add(op, new NetEaseCacheOperationContext(metadata, invocation.getArguments(), invocation.getThis()));
+                }
+                executeHandlers();
+            }
         }
         return invoke;
     }
@@ -84,7 +86,14 @@ public class CacheManagerInterceptor extends CacheInterceptor implements Applica
         cacheManagerHandlers.add(cacheManagerHandler);
     }
 
-
+    /**
+     * 部分情况下尚未加载完成，不能进行后续处理，这里重写用来暴露父类的initialized 标记
+     */
+    @Override
+    public void afterSingletonsInstantiated() {
+        super.afterSingletonsInstantiated();
+        this.initialized = true;
+    }
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         List<ClassCacheDto> cacheConfig = new ArrayList<>();
