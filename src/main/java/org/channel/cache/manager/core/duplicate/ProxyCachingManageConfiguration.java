@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.channel.cache.manager.core;
+package org.channel.cache.manager.core.duplicate;
 
+import org.channel.cache.manager.core.CacheManagerInterceptor;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.cache.annotation.AbstractCachingConfiguration;
 import org.springframework.cache.annotation.AnnotationCacheOperationSource;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.config.CacheManagementConfigUtils;
 import org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor;
 import org.springframework.cache.interceptor.CacheInterceptor;
@@ -35,11 +35,11 @@ import org.springframework.core.type.AnnotationMetadata;
  * to enable proxy-based annotation-driven cache management.
  *
  * @author Chris Beams
- * @see CachingManagerConfigurationSelector
+ * @see CachingManageConfigurationSelector
  * @since 3.1
  */
 @Configuration
-public class ProxyCachingManagerConfiguration extends AbstractCachingConfiguration {
+public class ProxyCachingManageConfiguration extends AbstractCachingConfiguration {
 
     @Bean(name = CacheManagementConfigUtils.CACHE_ADVISOR_BEAN_NAME)
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -79,10 +79,10 @@ public class ProxyCachingManagerConfiguration extends AbstractCachingConfigurati
     @Override
     public void setImportMetadata(AnnotationMetadata importMetadata) {
         this.enableCaching = AnnotationAttributes.fromMap(
-                importMetadata.getAnnotationAttributes(EnableCaching.class.getName(), false));
+                importMetadata.getAnnotationAttributes(EnableCacheManageCaching.class.getName(), false));
         if (this.enableCaching == null) {
             throw new IllegalArgumentException(
-                    "@EnableCachingManager is not present on importing class " + importMetadata.getClassName());
+                    "@EnableCacheManageCaching is not present on importing class " + importMetadata.getClassName());
         }
     }
 }

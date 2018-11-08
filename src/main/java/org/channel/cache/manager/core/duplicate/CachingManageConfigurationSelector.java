@@ -1,6 +1,5 @@
-package org.channel.cache.manager.core;
+package org.channel.cache.manager.core.duplicate;
 
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.AdviceModeImportSelector;
 import org.springframework.context.annotation.AutoProxyRegistrar;
@@ -9,7 +8,7 @@ import org.springframework.util.ClassUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CachingManagerConfigurationSelector extends AdviceModeImportSelector<EnableCaching> {
+public class CachingManageConfigurationSelector extends AdviceModeImportSelector<EnableCacheManageCaching> {
 
 	private static final String PROXY_JCACHE_CONFIGURATION_CLASS =
 			"org.springframework.cache.jcache.config.ProxyJCacheConfiguration";
@@ -22,10 +21,10 @@ public class CachingManagerConfigurationSelector extends AdviceModeImportSelecto
 
 
 	private static final boolean jsr107Present = ClassUtils.isPresent(
-			"javax.cache.Cache", CachingManagerConfigurationSelector.class.getClassLoader());
+			"javax.cache.Cache", CachingManageConfigurationSelector.class.getClassLoader());
 
 	private static final boolean jcacheImplPresent = ClassUtils.isPresent(
-			PROXY_JCACHE_CONFIGURATION_CLASS, CachingManagerConfigurationSelector.class.getClassLoader());
+			PROXY_JCACHE_CONFIGURATION_CLASS, CachingManageConfigurationSelector.class.getClassLoader());
 
 	@Override
 	public String[] selectImports(AdviceMode adviceMode) {
@@ -46,7 +45,7 @@ public class CachingManagerConfigurationSelector extends AdviceModeImportSelecto
 	private String[] getProxyImports() {
 		List<String> result = new ArrayList<String>();
 		result.add(AutoProxyRegistrar.class.getName());
-		result.add(ProxyCachingManagerConfiguration.class.getName());
+		result.add(ProxyCachingManageConfiguration.class.getName());
 		if (jsr107Present && jcacheImplPresent) {
 			result.add(PROXY_JCACHE_CONFIGURATION_CLASS);
 		}
