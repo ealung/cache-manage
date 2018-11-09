@@ -1,9 +1,11 @@
 package org.channel.cache.manager.web.login;
 
+
+import org.channel.cache.manager.web.LoginUser;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -11,11 +13,12 @@ import java.io.IOException;
  * @since 2018/10/26 10:15.
  */
 public class LoginFilter implements Filter {
-    protected LoginServletParam  loginServletParam;
+    protected LoginServletParam loginServletParam;
 
     public LoginFilter(LoginServletParam loginServletParam) {
         this.loginServletParam = loginServletParam;
     }
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -23,8 +26,8 @@ public class LoginFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request=(HttpServletRequest)servletRequest;
-        HttpServletResponse response=(HttpServletResponse)servletResponse;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String contextPath = request.getContextPath();
         String servletPath = request.getServletPath();
@@ -41,24 +44,24 @@ public class LoginFilter implements Filter {
             String usernameParam = request.getParameter(loginServletParam.getParamUserName());
             String passwordParam = request.getParameter(loginServletParam.getParamUserPassword());
             if (loginServletParam.getUsername().equals(usernameParam) && loginServletParam.getPassword().equals(passwordParam)) {
-                request.getSession().setAttribute(loginServletParam.getSessionUserKey(), loginServletParam.getUsername());
+                loginServletParam.getLoginUserConfig().saveLoginUser(request, response, loginServletParam);
                 response.getWriter().print("success");
             } else {
                 response.getWriter().print("error");
             }
             return;
         }
-        if (!ContainsUser(request)
+        if (!ContainsUser(request,response)
                 && !(loginServletParam.getLoginPage().equals(path) //
                 || path.startsWith("/css")//
                 || path.startsWith("/js") //
                 || path.startsWith("/img"))
                 ) {
-            response.sendRedirect(loginServletParam.getPrefix()+loginServletParam.getLoginPage());
+            response.sendRedirect(loginServletParam.getPrefix() + loginServletParam.getLoginPage());
             return;
         }
         boolean b = returnResourceFile(path, uri, response);
-        if(!b){
+        if (!b) {
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
@@ -67,6 +70,7 @@ public class LoginFilter implements Filter {
     public void destroy() {
 
     }
+
     protected boolean returnResourceFile(String fileName, String uri, HttpServletResponse response)
             throws ServletException,
             IOException {
@@ -95,8 +99,8 @@ public class LoginFilter implements Filter {
         return loginServletParam.getResourcePath() + fileName;
     }
 
-    public boolean ContainsUser(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        return session != null && session.getAttribute(loginServletParam.getSessionUserKey()) != null;
+    public boolean ContainsUser(HttpServletRequest request, HttpServletResponse response) {
+        LoginUser loginUser = loginServletParam.getLoginUserConfig().getLoginUser(request, response, loginServletParam);
+        return loginUser != null;
     }
 }

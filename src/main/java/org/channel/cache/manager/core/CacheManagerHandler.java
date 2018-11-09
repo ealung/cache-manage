@@ -12,11 +12,11 @@ import java.util.List;
 public interface CacheManagerHandler extends Ordered {
     void setStorage(CacheStorage cacheStorage);
 
-    void afterCacheInvoker(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
+    void afterCacheInvoker(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
 
-    void afterCacheAble(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
+    void afterCacheAble(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
 
-    void afterCacheEvict(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
+    void afterCacheEvict(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
 
-    void afterCachePut(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
+    void afterCachePut(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
 }

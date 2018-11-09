@@ -2,6 +2,7 @@ package org.channel.cache.manager.web.login;
 
 import lombok.Builder;
 import lombok.Data;
+import org.channel.cache.manager.web.LoginUserConfig;
 
 /**
  * @author zhangchanglu
@@ -22,8 +23,8 @@ public class LoginServletParam {
     private String loginPage;
     //servlet拦截映射前缀
     private String prefix;
-
-    public static LoginServletParamBuilder defaultBuilder() {
+    private LoginUserConfig loginUserConfig;
+    public static LoginServletParam.LoginServletParamBuilder defaultBuilder() {
         return LoginServletParam.builder()
                 .loginUrl("/login")
                 .paramUserName("username")

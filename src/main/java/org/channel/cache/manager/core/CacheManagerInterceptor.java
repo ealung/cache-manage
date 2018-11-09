@@ -27,7 +27,7 @@ import java.util.*;
  */
 @Slf4j
 public class CacheManagerInterceptor extends CacheInterceptor implements ApplicationListener<ContextRefreshedEvent> {
-    private MultiValueMap<CacheOperation, NetEaseCacheOperationContext> contexts = null;
+    private MultiValueMap<CacheOperation, CacheManagerOperationContext> contexts = null;
     private List<CacheManagerHandler> cacheManagerHandlers = new ArrayList<>();
     private boolean initialized=false;
     @Override
@@ -44,7 +44,7 @@ public class CacheManagerInterceptor extends CacheInterceptor implements Applica
                 contexts = new LinkedMultiValueMap<>(operations.size());
                 for (CacheOperation op : operations) {
                     CacheOperationMetadata metadata = getCacheOperationMetadata(op, invocation.getMethod(), targetClass);
-                    this.contexts.add(op, new NetEaseCacheOperationContext(metadata, invocation.getArguments(), invocation.getThis()));
+                    this.contexts.add(op, new CacheManagerOperationContext(metadata, invocation.getArguments(), invocation.getThis()));
                 }
                 executeHandlers();
             }
@@ -54,7 +54,7 @@ public class CacheManagerInterceptor extends CacheInterceptor implements Applica
 
     protected void executeHandlers() {
         for (CacheManagerHandler cacheManagerHandler : cacheManagerHandlers) {
-            for (Map.Entry<CacheOperation, List<NetEaseCacheOperationContext>> classListEntry : contexts.entrySet()) {
+            for (Map.Entry<CacheOperation, List<CacheManagerOperationContext>> classListEntry : contexts.entrySet()) {
                 if (classListEntry.getKey().getClass().isAssignableFrom(CacheableOperation.class)) {
                     cacheManagerHandler.afterCacheAble(classListEntry.getValue());
                 } else if (classListEntry.getKey().getClass().isAssignableFrom(CachePutOperation.class)) {
@@ -67,7 +67,7 @@ public class CacheManagerInterceptor extends CacheInterceptor implements Applica
         }
     }
 
-    public class NetEaseCacheOperationContext extends CacheOperationContext {
+    public class CacheManagerOperationContext extends CacheOperationContext {
         @Override
         public Collection<? extends Cache> getCaches() {
             return super.getCaches();
@@ -77,7 +77,7 @@ public class CacheManagerInterceptor extends CacheInterceptor implements Applica
             return generateKey(new Object());
         }
 
-        public NetEaseCacheOperationContext(CacheOperationMetadata metadata, Object[] args, Object target) {
+        public CacheManagerOperationContext(CacheOperationMetadata metadata, Object[] args, Object target) {
             super(metadata, args, target);
         }
     }
