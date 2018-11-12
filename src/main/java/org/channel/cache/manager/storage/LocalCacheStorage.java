@@ -23,8 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @ConditionalOnMissingBean(CacheStorage.class)
 public class LocalCacheStorage implements CacheStorage {
-    private final String CACHE_CLASS_CONFIG = "KADA_CACHE_CACHE_CLASS_CONFIG";
-    private final String CACHE_CLASS_CACHE = "KADA_CACHE_CACHE";
     private static Map<String, Collection<CacheMethodDto>> cacheInfo = new ConcurrentHashMap<>();
 
     @Override
@@ -102,8 +100,8 @@ public class LocalCacheStorage implements CacheStorage {
     }
 
     @Override
-    public void addCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        CacheManagerInterceptor.NetEaseCacheOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
+    public void addCache(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
+        CacheManagerInterceptor.CacheManagerOperationContext cacheOperationContext = cacheManagerOperationContexts.get(0);
         handelForClassMethodCache(cacheOperationContext, managerDto -> {
             if (null == managerDto.getCacheKeys()) {
                 managerDto.setCacheKeys(new ArrayList<>());
@@ -114,8 +112,8 @@ public class LocalCacheStorage implements CacheStorage {
     }
 
     @Override
-    public void removeCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        CacheManagerInterceptor.NetEaseCacheOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
+    public void removeCache(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
+        CacheManagerInterceptor.CacheManagerOperationContext cacheOperationContext = cacheManagerOperationContexts.get(0);
         handelForClassMethodCache(cacheOperationContext, managerDto -> {
             if (null != managerDto.getCacheKeys()) {
                 managerDto.getCacheKeys().remove(cacheOperationContext.getKey().toString());
@@ -124,7 +122,7 @@ public class LocalCacheStorage implements CacheStorage {
         });
     }
 
-    private void handelForClassMethodCache(CacheManagerInterceptor.NetEaseCacheOperationContext cacheOperationContext, Callback<CacheManagerDto, Object> callback) {
+    private void handelForClassMethodCache(CacheManagerInterceptor.CacheManagerOperationContext cacheOperationContext, Callback<CacheManagerDto, Object> callback) {
         CacheOperation cacheOperation = cacheOperationContext.getOperation();
         String className = cacheOperationContext.getTarget().getClass().getName();
         Collection<? extends Cache> caches = cacheOperationContext.getCaches();

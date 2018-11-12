@@ -34,8 +34,9 @@ public interface CacheStorage extends CacheManagerOperation {
     boolean removeClassName(String cacheName, String key);
 
     boolean removeCache(String key);
-    void addCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
 
-    void removeCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts);
+    void addCache(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
+
+    void removeCache(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts);
 
 }

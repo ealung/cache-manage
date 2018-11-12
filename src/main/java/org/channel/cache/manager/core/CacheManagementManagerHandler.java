@@ -19,23 +19,21 @@ public class CacheManagementManagerHandler implements CacheManagerHandler {
     }
 
     @Override
-    public void afterCacheInvoker(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        for (CacheManagerInterceptor.NetEaseCacheOperationContext netEaseCacheOperationContext : netEaseCacheOperationContexts) {
-        }
+    public void afterCacheInvoker(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
     }
 
     @Override
-    public void afterCacheAble(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        cacheStorage.addCache(netEaseCacheOperationContexts);
+    public void afterCacheAble(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
+        cacheStorage.addCache(cacheManagerOperationContexts);
     }
 
     @Override
-    public void afterCacheEvict(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        cacheStorage.removeCache(netEaseCacheOperationContexts);
+    public void afterCacheEvict(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
+        cacheStorage.removeCache(cacheManagerOperationContexts);
     }
 
     @Override
-    public void afterCachePut(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
+    public void afterCachePut(List<CacheManagerInterceptor.CacheManagerOperationContext> cacheManagerOperationContexts) {
 
     }
 

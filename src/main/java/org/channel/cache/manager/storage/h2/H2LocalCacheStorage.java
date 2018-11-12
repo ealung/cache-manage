@@ -258,8 +258,8 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
     }
 
     @Override
-    public void addCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        CacheManagerInterceptor.NetEaseCacheOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
+    public void addCache(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts) {
+        CacheManagerInterceptor.CacheManagerOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
         CacheKeyEntity cacheKeyEntity = new CacheKeyEntity();
         String className = cacheOperationContext.getTarget().getClass().getName();
         String methodName = cacheOperationContext.getMethod().getName();
@@ -275,8 +275,8 @@ public class H2LocalCacheStorage implements CacheStorage, CacheManagerOperation 
     }
 
     @Override
-    public void removeCache(List<CacheManagerInterceptor.NetEaseCacheOperationContext> netEaseCacheOperationContexts) {
-        CacheManagerInterceptor.NetEaseCacheOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
+    public void removeCache(List<CacheManagerInterceptor.CacheManagerOperationContext> netEaseCacheOperationContexts) {
+        CacheManagerInterceptor.CacheManagerOperationContext cacheOperationContext = netEaseCacheOperationContexts.get(0);
         String className = cacheOperationContext.getTarget().getClass().getName();
         String methodName = cacheOperationContext.getMethod().getName();
         CacheOperation cacheOperation = cacheOperationContext.getOperation();
